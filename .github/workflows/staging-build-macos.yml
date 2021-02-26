@@ -49,6 +49,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_STAGING_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Required Packages
-        run: sudo brew install yq
+        run: brew install yq
       - name: Build Kibana
         run: ./kibana/macos/opendistro-kibana-build.sh tar macos x64
