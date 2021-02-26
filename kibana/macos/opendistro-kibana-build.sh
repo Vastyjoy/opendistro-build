@@ -110,7 +110,9 @@ do
   plugin_counts=`echo $plugin_latest | sed 's/.zip[ ]*/.zip\n/g' | sed '/^$/d' | wc -l`
   if [ "$plugin_counts" -gt 1 ]
   then
+    echo "#########"
     plugin_latest=`echo $plugin_latest | sed 's/.zip[ ]*/.zip\n/g' | sed '/^$/d' | grep "$PLATFORM" | grep "$ARCHITECTURE"`
+    echo "$plugin_latest"
   fi
   echo "################################"
   echo "Platform : "$PLATFORM" ARCHITECTURE: $ARCHITECTURE "
