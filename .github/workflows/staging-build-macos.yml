@@ -33,7 +33,7 @@ jobs:
     - name: Build macOS
       env:
         install4j_license: ${{ secrets.INSTALL4J_LICENSE }}
-      run: ./elasticsearch/windows/opendistro-macos-build.sh macos x64
+      run: ./elasticsearch/macos/opendistro-macos-build.sh macos x64
        
 
 
@@ -51,4 +51,4 @@ jobs:
       - name: Required Packages
         run: ./release-tools/scripts/required_packages.sh
       - name: Build Kibana
-        run: ./kibana/linux_distributions/opendistro-kibana-build.sh tar macos x64
+        run: ./kibana/macos/opendistro-kibana-build.sh tar macos x64
