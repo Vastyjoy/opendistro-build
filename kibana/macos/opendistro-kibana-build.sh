@@ -114,7 +114,7 @@ do
   fi
   echo "################################"
   echo "Platform : "$PLATFORM" ARCHITECTURE: $ARCHITECTURE "
-  echo "plugin_latest"
+  echo "$plugin_latest"
   echo "################################"
   if [ "$plugin_latest" != "None" ]
   then
