@@ -102,23 +102,13 @@ rm -rf /tmp/plugins
 mkdir -p /tmp/plugins
 for index in ${!PLUGINS_ARRAY[@]}
 do
-  echo "#################################"
-  echo "#### ${PLUGINS_ARRAY[$index]} ###"
-  echo "--bucket $S3_RELEASE_BUCKET --prefix "${PLUGIN_PATH}${OD_VERSION}/$S3_RELEASE_BUILD/kibana-plugins""
-  echo "#################################"
   plugin_latest=`(aws s3api list-objects --bucket $S3_RELEASE_BUCKET --prefix "${PLUGIN_PATH}${OD_VERSION}/$S3_RELEASE_BUILD/kibana-plugins" --query 'Contents[].[Key]' --output text | grep -v sha512 |grep ${PLUGINS_ARRAY[$index]} |grep zip) || (echo None)`
   plugin_counts=`echo $plugin_latest | sed 's/.zip[ ]*/.zip\n/g' | sed '/^$/d' | wc -l`
   echo "plugin count $plugin_counts"
   if [ "$plugin_counts" -gt 1 ]
   then
-    echo "#########"
-    plugin_latest=`echo $plugin_latest | sed 's/.zip[ ]*/.zip\n/g' | sed '/^$/d' | grep "$PLATFORM" | grep "$ARCHITECTURE"`
-    echo "$plugin_latest"
+    plugin_latest=`(echo $plugin_latest | sed 's/.zip[ ]*/.zip\n/g' | sed '/^$/d' | grep "$PLATFORM" | grep "$ARCHITECTURE") || (echo None)`
   fi
-  echo "################################"
-  echo "Platform : "$PLATFORM" ARCHITECTURE: $ARCHITECTURE "
-  echo "$plugin_latest"
-  echo "################################"
   if [ "$plugin_latest" != "None" ]
   then
     echo "downloading $plugin_latest"
