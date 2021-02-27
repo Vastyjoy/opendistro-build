@@ -104,20 +104,24 @@ for index in ${!PLUGINS_ARRAY[@]}
 do
   plugin_latest=`(aws s3api list-objects --bucket $S3_RELEASE_BUCKET --prefix "${PLUGIN_PATH}${OD_VERSION}/$S3_RELEASE_BUILD/kibana-plugins" --query 'Contents[].[Key]' --output text | grep -v sha512 |grep ${PLUGINS_ARRAY[$index]} |grep zip) || (echo None)`
   plugin_counts=`echo $plugin_latest | sed 's/.zip[ ]*/.zip\n/g' | sed '/^$/d' | wc -l`
+  echo $plugin_counts
   if [ "$plugin_counts" -gt 1 ]
   then
+    echo "##@@###"
     plugin_latest=`(echo $plugin_latest | sed 's/.zip[ ]*/.zip\n/g' | sed '/^$/d' | grep "$PLATFORM" | grep "$ARCHITECTURE") || (echo None)`
+    echo "$plugin_latest"
   fi
   echo "#### $plugin_latest   #######"
   if [ "$plugin_latest" != "None" ]
   then
+    echo "@@@@ $plugin_latest @@@@"
     echo "downloading $plugin_latest"
     plugin_path=${PLUGINS_ARRAY[$index]}
     echo "plugin path:  $plugin_path"
     aws s3 cp "s3://${S3_RELEASE_BUCKET}/$plugin_latest" "/tmp/plugins" ; echo $?
     plugin=`echo $plugin_latest | awk -F '/' '{print $NF}'`
     echo "installing $plugin"
-    ##$PACKAGE_NAME/bin/kibana-plugin --allow-root install file:/tmp/plugins/$plugin
+    $PACKAGE_NAME/bin/kibana-plugin --allow-root install file:/tmp/plugins/$plugin
   fi
 done
 
