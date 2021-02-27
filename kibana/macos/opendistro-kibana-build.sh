@@ -107,18 +107,15 @@ do
   echo "plugin count: $plugin_counts"
   if [ "$plugin_counts" -gt 1 ]
   then
-    echo "##@@###"
     plugin_latest=`(echo $plugin_latest | sed 's/.zip[ ]*/.zip\n/g' | sed '/^$/d' | grep "$PLATFORM" | grep "$ARCHITECTURE") || (echo None)`
-    echo "$plugin_latest"
   fi
-  echo "#### $plugin_latest   #######"
+  echo "### $plugin_latest #####"
   if [ "$plugin_latest" != "None" ]
   then
-    echo "@@@@ $plugin_latest @@@@"
     echo "downloading $plugin_latest"
     plugin_path=${PLUGINS_ARRAY[$index]}
     echo "plugin path:  $plugin_path"
-    aws s3 cp "s3://${S3_RELEASE_BUCKET}/$plugin_latest" "/tmp/plugins" ; echo $?
+    aws s3 cp "s3://${S3_RELEASE_BUCKET}/$plugin_latest" "/tmp/plugins" --quiet; echo $?
     plugin=`echo $plugin_latest | awk -F '/' '{print $NF}'`
     echo "installing $plugin"
     $PACKAGE_NAME/bin/kibana-plugin --allow-root install file:/tmp/plugins/$plugin
@@ -237,7 +234,7 @@ if [ $# -eq 0 ] || [ "$PACKAGE_TYPE" = "tar" ]; then
   tar_artifact=`ls $TARGET_DIR/*.tar.gz`
   tar_checksum_artifact=`ls $TARGET_DIR/*.tar.gz.sha512`
   echo "Staging destination : s3://$S3_RELEASE_BUCKET/${PLUGIN_PATH}${OD_VERSION}/odfe/"
-#  aws s3 cp $tar_artifact s3://$S3_RELEASE_BUCKET/${PLUGIN_PATH}${OD_VERSION}/odfe/
-#  aws s3 cp $tar_checksum_artifact s3://$S3_RELEASE_BUCKET/${PLUGIN_PATH}${OD_VERSION}/odfe/
+  aws s3 cp $tar_artifact s3://$S3_RELEASE_BUCKET/${PLUGIN_PATH}${OD_VERSION}/odfe/
+  aws s3 cp $tar_checksum_artifact s3://$S3_RELEASE_BUCKET/${PLUGIN_PATH}${OD_VERSION}/odfe/
 
 fi
